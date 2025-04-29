@@ -5,41 +5,41 @@ hsh \- Simple UNIX command-line interpreter
 .B hsh
 .SH DESCRIPTION
 .B hsh
-is a lightweight UNIX command-line interpreter designed for executing basic user commands. Developed as a trimester final project at Holberton School, it introduces core shell functionalities such as command execution, process management, and error handling.
+is a lightweight UNIX command-line interpreter designed to execute basic user commands. This shell was developed as a trimester final project at Holberton School, focusing on core shell functionalities such as command execution, process management, and error handling.
 .SH OPTIONS
 None.
 .SH USAGE
 .B hsh
-launches an interactive shell interface displaying the prompt "NM$" (customizable) to accept user commands. Commands are executed upon entering a newline.
+launches an interactive shell interface displaying the prompt "NM$" (configurable) to indicate readiness for user command input. Commands are executed upon entering a newline.
 .SH FUNCTIONALITY
 .B hsh
-supports the following features:
-.IP "\fB1. Prompt Display\fR"
-Displays the "NM$" prompt (configurable) and awaits user input. Commands must end with a newline.
+provides the following features:
+.IP "\fB1. Display a Prompt\fR"
+Displays the "NM$" prompt (configurable) and waits for user input. A command must end with a newline.
 .IP "\fB2. Command Execution\fR"
-Executes user-entered commands.
-.IP "\fB3. Error Handling\fR"
-Handles errors (e.g., "command not found") by printing an error message and redisplaying the prompt. Also manages the "end of file" condition (Ctrl+D).
-.IP "\fB4. Command Arguments\fR"
+Executes the command entered by the user.
+.IP "\fB3. Handle Errors\fR"
+Handles errors by printing an error message (e.g., "command not found") and redisplaying the prompt. It also manages the "end of file" condition (Ctrl+D).
+.IP "\fB4. Handle Command Lines with Arguments\fR"
 Supports commands with arguments.
-.IP "\fB5. PATH Handling\fR"
+.IP "\fB5. Handle PATH\fR"
 Utilizes the PATH environment variable to locate executable files.
-.IP "\fB6. Built-in Commands\fR"
-Implements
+.IP "\fB6. Implement Built-in Commands\fR"
+Implements the
 .B exit
 and
 .B env
 built-in commands.
-.IP "\fB7. Exit Command\fR"
+.IP "\fB7. Exit Built-in Command\fR"
 The
 .B exit
 command terminates the shell. Usage:
 .B exit
 (no arguments).
-.IP "\fB8. Env Command\fR"
+.IP "\fB8. Env Built-in Command\fR"
 The
 .B env
-command displays the current environment variables.
+command prints the current environment variables.
 .SH EXAMPLES
 .PP
 .B $ ./hsh
@@ -59,11 +59,11 @@ NM$ exit
 barbie_j  env-main.c  exec.c  fork.c  pid.c  ppid.c  prompt  prompt.c  shell.c  stat.c  test_scripting.sh  wait.c
 .SH EXIT STATUS
 .B hsh
-returns:
+returns the following exit status values:
 .IP 0
 Successful execution.
 .IP 1
-Execution error.
+Error during execution.
 .SH FILES
 None.
 .SH SEE ALSO
@@ -74,7 +74,7 @@ None.
 .BR wait(2),
 .BR access(2)
 .SH BUGS
-Report issues to the project’s GitHub repository.
+Report bugs to the project's GitHub repository.
 .SH AUTHORS
 .B hsh
 was developed by Lala Ibadullayeva, Okan Mahmudov, and Allahshukur Gulmaliyev as a trimester final project at Holberton School.
