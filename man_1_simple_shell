@@ -1,0 +1,84 @@
+.TH HSH 1 "29 April 2025" "1.0" "hsh manual page"
+.SH NAME
+hsh \- Simple UNIX command-line interpreter
+.SH SYNOPSIS
+.B hsh
+.SH DESCRIPTION
+.B hsh
+is a lightweight UNIX command-line interpreter designed for executing basic user commands. Developed as a trimester final project at Holberton School, it introduces core shell functionalities such as command execution, process management, and error handling.
+.SH OPTIONS
+None.
+.SH USAGE
+.B hsh
+launches an interactive shell interface displaying the prompt "NM$" (customizable) to accept user commands. Commands are executed upon entering a newline.
+.SH FUNCTIONALITY
+.B hsh
+supports the following features:
+.IP "\fB1. Prompt Display\fR"
+Displays the "NM$" prompt (configurable) and awaits user input. Commands must end with a newline.
+.IP "\fB2. Command Execution\fR"
+Executes user-entered commands.
+.IP "\fB3. Error Handling\fR"
+Handles errors (e.g., "command not found") by printing an error message and redisplaying the prompt. Also manages the "end of file" condition (Ctrl+D).
+.IP "\fB4. Command Arguments\fR"
+Supports commands with arguments.
+.IP "\fB5. PATH Handling\fR"
+Utilizes the PATH environment variable to locate executable files.
+.IP "\fB6. Built-in Commands\fR"
+Implements
+.B exit
+and
+.B env
+built-in commands.
+.IP "\fB7. Exit Command\fR"
+The
+.B exit
+command terminates the shell. Usage:
+.B exit
+(no arguments).
+.IP "\fB8. Env Command\fR"
+The
+.B env
+command displays the current environment variables.
+.SH EXAMPLES
+.PP
+.B $ ./hsh
+.br
+NM$ ls
+.br
+./shell: No such file or directory
+.br
+NM$ /bin/ls
+.br
+barbie_j  env-main.c  exec.c  fork.c  pid.c  ppid.c  prompt  prompt.c  shell.c  stat.c  test_scripting.sh  wait.c
+.br
+NM$ exit
+.PP
+.B $ echo "/bin/ls" | ./hsh
+.br
+barbie_j  env-main.c  exec.c  fork.c  pid.c  ppid.c  prompt  prompt.c  shell.c  stat.c  test_scripting.sh  wait.c
+.SH EXIT STATUS
+.B hsh
+returns:
+.IP 0
+Successful execution.
+.IP 1
+Execution error.
+.SH FILES
+None.
+.SH SEE ALSO
+.BR bash(1),
+.BR sh(1),
+.BR execve(2),
+.BR fork(2),
+.BR wait(2),
+.BR access(2)
+.SH BUGS
+Report issues to the project’s GitHub repository.
+.SH AUTHORS
+.B hsh
+was developed by Lala Ibadullayeva, Okan Mahmudov, and Allahshukur Gulmaliyev as a trimester final project at Holberton School.
+.SH COPYRIGHT
+The
+.B hsh
+project and this manual page are open source.
