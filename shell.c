@@ -1,138 +1,124 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <errno.h>
 #include "main.h"
-
-char *search_path_for_command(char *command)
-{
-	char *path = NULL;
-	char *path_copy = NULL;
-	char *dir = NULL;
-	char *full_path = NULL;
-
-	if (command == NULL)
-	{
-		return (NULL);
-	}
-
-	if (strlen(command) == 0)
-	{
-		return (NULL);
-	}
-
-	if (access(command, F_OK) == 0 && command[0] == '.' && command[1] == '/')
-	{
-		return (command);
-	}
-
-	path = getenv("PATH");
-	path_copy = strdup(path);
-
-	dir = strtok(path_copy, ":");
-	while (dir)
-	{
-		full_path = malloc(strlen(dir) + strlen(command) + 2);
-		strcpy(full_path, dir);
-		strcat(full_path, "/");
-		strcat(full_path, command);
-		printf("%s\n", full_path);
-		free(full_path);
-		dir = strtok(NULL, ":");
-	}
-
-	free(path_copy);
-	return (NULL);
-}
-
-void fork_and_execute(char **argv)
+/**
+ * execute_command - func for executing command
+ * @args: arguments to path
+ * @path: path
+ */
+void execute_command(char **args, char *path)
 {
 	pid_t pid;
 	int status;
 
-	if (argv == NULL)
-	{
-		return;
-	}
-
 	pid = fork();
-	if (pid == 0)
+	if (pid == -1)
 	{
-		execve(argv[0], argv, environ);
+		perror("fork failed");
+		exit(EXIT_FAILURE);
+	}
+	else if (pid == 0)
+	{
+		if (execve(path, args, environ) == -1)
+		{
+			free(path);
+			fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{
-		wait(&status);
+		if (wait(&status) == -1)
+		{
+			free(path);
+			perror("wait failed");
+			exit(EXIT_FAILURE);
+		}
 	}
 }
-
-char **string_to_words_array(char *line)
+/**
+ * parse_command - func for parsing command
+ * @u_command: command to be parsed
+ * @args: arguments to command
+*/
+void parse_command(char *u_command, char **args)
 {
-	char *line_copy = NULL;
-	char **argv = NULL;
-	char *arg = NULL;
-	size_t argc = 0;
-	size_t i = 0;
+	char *command = strtok(u_command, " \t");
+	int i = 0;
 
-	line_copy = strdup(line);
-	arg = strtok(line_copy, " \n");
-	while (arg)
+	args[0] = NULL;
+	while (command != NULL && i < MAX_LEN - 1)
 	{
-		argc++;
-		arg = strtok(NULL, " \n");
+		args[i] = command;
+		i++;
+		command = strtok(NULL, " \t");
 	}
-	free(line_copy);
-
-	if (argc == 0)
-	{
-		return (NULL);
-	}
-
-	argv = malloc(sizeof(char *) * (argc + 1));
-	arg = strtok(line, " \n");
-	for (i = 0; i < argc; i++)
-	{
-		*(argv + i) = arg;
-		arg = strtok(NULL, " \n");
-	}
-	argv[i] = NULL;
-	return (argv);
+	args[i] = NULL;
 }
+/**
+ * process_commands - commands processor func
+ * @commands: commands
+ * @commands_array: array for all commands
+*/
+void process_commands(char *commands, char **commands_array)
+{
+	char *command;
+	int a = 0;
 
+	command = strtok(commands, "\n");
+	while (command != NULL)
+	{
+		commands_array[a] = command;
+		command = strtok(NULL, "\n");
+		a++;
+	}
+	commands_array[a] = NULL;
+}
+/**
+ * handle_commands_array - func for handling array of commands
+ * @commands_array: array of commands
+ */
+void handle_commands_array(char **commands_array)
+{
+	int a = 0;
+	char *command;
+
+	if (strcmp(commands_array[a], "exit") == 0)
+		exit(0);
+	else if (strcmp(commands_array[a], "env") == 0)
+		print_env();
+	else
+		while (commands_array[a] != NULL)
+		{
+			command = commands_array[a];
+			if (strcmp(command, "exit") == 0 && a > 0)
+				exit(2);
+			handle_command(command);
+			a++;
+		}
+}
+/**
+ * main - main func to process all functions
+ * Return: integer
+ */
 int main(void)
 {
-	char *line = NULL;
-	char **argv = NULL;
-	size_t buffer_length = 0;
-	ssize_t input_length = 0;
+	char commands[MAX_LEN];
+	char *commands_array[MAX_LEN];
+	ssize_t read_size;
 
 	while (1)
 	{
-		line = NULL;
-		argv = NULL;
-		input_length = getline(&line, &buffer_length, stdin);
-
-		if (input_length == -1)
+		read_size = read(STDIN_FILENO, commands, MAX_LEN);
+		if (read_size == -1)
 		{
-			free(line);
+			perror("Error reading command");
+			exit(EXIT_FAILURE);
+		}
+		else if (read_size == 0)
 			break;
-		}
-		argv = string_to_words_array(line);
-		if (argv == NULL)
-		{
-			free(argv);
-			free(line);
-			continue;
-		}
-		fork_and_execute(argv);
+		commands[read_size] = '\0';
 
-		free(argv);
-		free(line);
+		process_commands(commands, commands_array);
+		handle_commands_array(commands_array);
 	}
-
 	return (0);
 }
