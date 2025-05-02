@@ -149,21 +149,23 @@ int main(void)
 		argv = string_to_words_array(line);
 		if (argv == NULL)
 		{
-			free(argv);
-			free(line);
+			free(argv), free(line);
 			continue;
+		}
+		if (strcmp(argv[0], "exit") == 0)
+		{
+			free(argv), free(line);
+			break;
 		}
 		argv[0] = search_path_for_command(argv[0], &status);
 		if (argv[0] == NULL)
 		{
-			free(argv);
-			free(line);
+			free(argv), free(line);
 			continue;
 		}
+
 		fork_and_execute(argv);
-		free(argv[0]);
-		free(argv);
-		free(line);
+		free(argv[0]), free(argv), free(line);
 	}
 	exit(status);
 }
