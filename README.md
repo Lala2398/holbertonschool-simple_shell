@@ -20,12 +20,14 @@ It handles command parsing, locating binaries via the PATH environment variable,
 
 ### File Structure : 
 
+```
 ├── shell.c            # Main project code
 ├── main.h             # Header file
 ├── README.md          # General knowledge of the project
 ├── AUTHORS            #Names of Authors
 ├──man_1_simple_shell  #Manual page for the shell
 
+````
 
 
 ### Compilation :
