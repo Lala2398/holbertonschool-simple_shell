@@ -73,28 +73,25 @@ char *search_path_for_command(char *command, int *status)
 	return (NULL);
 }
 
-void fork_and_execute(char **argv)
+int fork_and_execute(char **argv)
 {
 	pid_t pid;
 	int status;
 
-	if (argv == NULL)
-	{
-		return;
-	}
-
 	pid = fork();
 	if (pid == 0)
 	{
-		execve(argv[0], argv, environ);
+		status = execve(argv[0], argv, environ);
 	}
 	else
 	{
 		wait(&status);
+		return (WEXITSTATUS(status));
 	}
+	return (status);
 }
 
-char **string_to_words_array(char *line)
+char **string_to_words_array(char *line, int *status)
 {
 	char *line_copy = NULL;
 	char **argv = NULL;
@@ -123,8 +120,20 @@ char **string_to_words_array(char *line)
 		*(argv + i) = arg;
 		arg = strtok(NULL, " \n");
 	}
+
 	argv[i] = NULL;
+
+	(void)status;
 	return (argv);
+}
+
+void print_env(void)
+{
+	size_t i = 0;
+	for (i = 0; environ[i]; i++)
+	{
+		printf("%s\n", environ[i]);
+	}
 }
 
 int main(void)
@@ -140,16 +149,22 @@ int main(void)
 		line = NULL;
 		argv = NULL;
 		input_length = getline(&line, &buffer_length, stdin);
-
 		if (input_length == -1)
 		{
 			free(line);
 			break;
 		}
-		argv = string_to_words_array(line);
+		argv = string_to_words_array(line, &status);
 		if (argv == NULL)
 		{
 			free(argv), free(line);
+			continue;
+		}
+		if (strcmp(argv[0], "env") == 0)
+		{
+			print_env();
+			free(line);
+			free(argv);
 			continue;
 		}
 		if (strcmp(argv[0], "exit") == 0)
@@ -164,7 +179,7 @@ int main(void)
 			continue;
 		}
 
-		fork_and_execute(argv);
+		status = fork_and_execute(argv);
 		free(argv[0]), free(argv), free(line);
 	}
 	exit(status);
