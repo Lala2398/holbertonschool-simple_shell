@@ -4,7 +4,7 @@
 
 ## Project Description : 
 Holberton Simple Shell is a basic Unix command-line interpreter (shell) written in C. 
-It was developed as a first-trimester project by Lala Ibadullayeva and Okan Mahmudov during the period from May 21st, 2025 to May 4th, 2025.
+It was developed as a first-trimester project by Lala Ibadullayeva and Okan Mahmudov during the period from April 21st, 2025 to May 4th, 2025.
 The shell interprets and executes user input, replicating core functionalities of popular shells like bash. 
 It handles command parsing, locating binaries via the PATH environment variable, executing programs using fork and execve, and managing basic built-in commands like env and exit.
 
