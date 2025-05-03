@@ -36,7 +36,11 @@ gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ````
 
 ### Usage : 
-- To start the shell: ./hsh
+- To start the shell:
+```
+./hsh
+```
+
 - Then enter commands like:
 ```
 $ ls
